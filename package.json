@@ -1,0 +1,71 @@
+{
+  "name": "@nirelc/microconf",
+  "description": "Lightweight and simple type-safety config library over microtype",
+  "author": "Toil",
+  "version": "0.0.1",
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://github.com/nirelc/microconf#readme",
+  "bugs": {
+    "url": "https://github.com/nirelc/microconf/issues"
+  },
+  "keywords": [
+    "config",
+    "env",
+    "configuration",
+    "conf",
+    "micro",
+    "type",
+    "safe",
+    "system",
+    "typings",
+    "fast",
+    "lightweight",
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "publint": "^0.3.24",
+    "tsdown": "^0.23.0",
+    "typescript": "^7.0.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./define": {
+      "types": "./dist/define.d.mts",
+      "import": "./dist/define.mjs"
+    },
+    "./types": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/types.mjs"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.mts",
+      "import": "./dist/utils.mjs"
+    },
+    "./sources/*": {
+      "types": "./dist/sources/*.d.mts",
+      "import": "./dist/sources/*.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "build:bun": "bunx tsdown"
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "files": [
+    "./dist"
+  ],
+  "sideEffects": false,
+  "dependencies": {
+    "@nirelc/microtype": "^0.0.2"
+  }
+}
