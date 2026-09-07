@@ -91,7 +91,9 @@ env({
 ```
 
 `prefix` - prefix for env variable names. e.g., with prefix `APP_`, `token` becomes `APP_TOKEN`
+
 `delimiter` - delimiter for nested keys. default: `__`
+
 `forceCoerce` - boolean to force type coercion. default: `true`. e.g. if set to `false`, `t.boolean()` willn't coerce `"true"` to `true` and will return a parse error instead
 
 ## Errors
