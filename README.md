@@ -87,6 +87,9 @@ env({
   prefix: "APP_", // optional, default: undefined
   delimiter: "__", // optional, default: "__"
   forceCoerce: true, // optional, default: true
+  renames: {
+    APP_NESTED__KEY: "RANDOM_KEY", // optional
+  },
 });
 ```
 
@@ -95,6 +98,8 @@ env({
 `delimiter` - delimiter for nested keys. default: `__`
 
 `forceCoerce` - boolean to force type coercion. default: `true`. e.g. if set to `false`, `t.boolean()` willn't coerce `"true"` to `true` and will return a parse error instead
+
+`renames` - optional map of env variable names to schema paths. e.g., with `renames: { APP_NESTED__KEY: "RANDOM_KEY" }`, the env variable `RANDOM_KEY` instead of `APP_NESTED__KEY`
 
 ## Errors
 

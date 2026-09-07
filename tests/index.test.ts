@@ -178,6 +178,24 @@ describe("defineConfig", () => {
       ).toThrowError(ParseConfigError);
     });
 
+    test("should use renames", () => {
+      process.env.SERVICE_PORT = "3000";
+      const schema = t.number().default(8080);
+
+      expect(
+        defineConfig({
+          schema: { reusedPort: schema },
+          sources: [
+            env({
+              renames: {
+                REUSED_PORT: "SERVICE_PORT",
+              },
+            }),
+          ],
+        }),
+      ).toEqual({ reusedPort: 3000 });
+    });
+
     test("should coerce through nested wrappers", () => {
       process.env.WRAPPED_PORT = "3000";
 

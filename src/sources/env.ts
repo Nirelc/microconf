@@ -7,6 +7,8 @@ import {
 import type { ConfigIssue, SchemaMeta, Source } from "../types";
 import { insertWordSep } from "../utils";
 
+export type RenameMap = Record<string, string>;
+
 export type EnvSourceOptions = {
   prefix?: string;
   delimiter?: string;
@@ -15,6 +17,7 @@ export type EnvSourceOptions = {
    * useful, because env variables are always strings, and we want to coerce them to the correct type
    */
   forceCoerce?: boolean;
+  renames?: RenameMap;
 };
 
 function enableCoercion(schema: Schema): Schema {
@@ -35,6 +38,7 @@ export class EnvSource implements Source {
   prefix: string;
   delimiter: string;
   forceCoerce: boolean;
+  renames: RenameMap;
 
   name = "env";
 
@@ -42,10 +46,12 @@ export class EnvSource implements Source {
     prefix = "",
     delimiter = "__",
     forceCoerce = true,
+    renames = {},
   }: EnvSourceOptions = {}) {
     this.prefix = prefix.trim();
     this.delimiter = delimiter;
     this.forceCoerce = forceCoerce;
+    this.renames = renames;
   }
 
   getKeyByPath(path: PropertyKey[]): string {
@@ -60,8 +66,13 @@ export class EnvSource implements Source {
       .join(this.delimiter)}`.toUpperCase();
   }
 
+  getKeyWithRenames(path: PropertyKey[]): string {
+    const key = this.getKeyByPath(path);
+    return this.renames[key] ?? key;
+  }
+
   getValueByPath(path: PropertyKey[]): string | undefined {
-    return process.env[this.getKeyByPath(path)];
+    return process.env[this.getKeyWithRenames(path)];
   }
 
   load(meta: SchemaMeta): ParseResult<unknown> | undefined {
@@ -77,7 +88,7 @@ export class EnvSource implements Source {
       return result;
     }
 
-    const key = this.getKeyByPath(meta.path);
+    const key = this.getKeyWithRenames(meta.path);
     const issues: ConfigIssue[] = result.issues.map((issue) => ({
       ...issue,
       key,
