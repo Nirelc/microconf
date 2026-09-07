@@ -1,4 +1,4 @@
-import type { ParseResult, Schema as TSchema } from "@nirelc/microtype";
+import type { Issue, ParseResult, Schema as TSchema } from "@nirelc/microtype";
 
 export type Schema = {
   [key: string]: TSchema | Schema;
@@ -23,7 +23,12 @@ export type SchemaMeta = {
   schema: TSchema;
 };
 
+export type ConfigIssue = Issue & {
+  source?: string;
+  key?: string;
+};
+
 export interface Source {
   name: string;
-  load(schemas: SchemaMeta): ParseResult<unknown>;
+  load(meta: SchemaMeta): ParseResult<unknown> | undefined;
 }

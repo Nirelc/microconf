@@ -1,12 +1,12 @@
 import {
   BaseSchema,
   formatPath,
-  formatValidationMessage,
+  formatIssue,
   type Issue,
   type ParseResult,
 } from "@nirelc/microtype";
 import { isRecord } from "./guards/object";
-import type { Schema, SchemaMeta } from "./types";
+import type { ConfigIssue, Schema, SchemaMeta } from "./types";
 
 export class ParseError extends Error {
   constructor(
@@ -15,7 +15,17 @@ export class ParseError extends Error {
   ) {
     super(
       `${context} failed with ${issues.length} issue(s):\n${issues
-        .map((issue) => `- ${formatValidationMessage([issue])}`)
+        .map((issue: ConfigIssue) => {
+          if (issue.source === undefined) {
+            return `- ${formatIssue(issue)}`;
+          }
+
+          const location = issue.key ?? formatPath(issue.path ?? []);
+          const message = issue.message.replace(/^[A-Z]/, (char) =>
+            char.toLowerCase(),
+          );
+          return `- ${location} from ${issue.source}: ${message}`;
+        })
         .join("\n")}`,
     );
     this.name = "ParseError";
@@ -23,7 +33,7 @@ export class ParseError extends Error {
 }
 
 export class ParseConfigError extends ParseError {
-  constructor(override readonly issues: Issue[]) {
+  constructor(override readonly issues: ConfigIssue[]) {
     super(issues, "Config parsing");
     this.name = "ParseConfigError";
   }

@@ -4,7 +4,7 @@ import {
   type ParseResult,
   type Schema,
 } from "@nirelc/microtype";
-import type { SchemaMeta, Source } from "../types";
+import type { ConfigIssue, SchemaMeta, Source } from "../types";
 import { insertWordSep } from "../utils";
 
 export type EnvSourceOptions = {
@@ -48,8 +48,8 @@ export class EnvSource implements Source {
     this.forceCoerce = forceCoerce;
   }
 
-  getValueByPath(path: PropertyKey[]): string | undefined {
-    const envKey = `${this.prefix}${path
+  getKeyByPath(path: PropertyKey[]): string {
+    return `${this.prefix}${path
       .map((p) => {
         if (typeof p === "string") {
           return insertWordSep(p);
@@ -58,17 +58,31 @@ export class EnvSource implements Source {
         return p;
       })
       .join(this.delimiter)}`.toUpperCase();
-    return process.env[envKey];
   }
 
-  load(meta: SchemaMeta): ParseResult<unknown> {
-    const value = this.getValueByPath(meta.path);
-    const schema =
-      this.forceCoerce && value !== undefined
-        ? enableCoercion(meta.schema)
-        : meta.schema;
+  getValueByPath(path: PropertyKey[]): string | undefined {
+    return process.env[this.getKeyByPath(path)];
+  }
 
-    return schema._parse(value);
+  load(meta: SchemaMeta): ParseResult<unknown> | undefined {
+    const value = this.getValueByPath(meta.path);
+    if (value === undefined) {
+      return undefined;
+    }
+
+    const schema = this.forceCoerce ? enableCoercion(meta.schema) : meta.schema;
+
+    const result = schema._parse(value);
+    if (result.success) {
+      return result;
+    }
+
+    const key = this.getKeyByPath(meta.path);
+    const issues: ConfigIssue[] = result.issues.map((issue) => ({
+      ...issue,
+      key,
+    }));
+    return { success: false, issues };
   }
 }
 

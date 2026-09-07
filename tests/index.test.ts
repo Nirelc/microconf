@@ -81,7 +81,7 @@ describe("sources", () => {
 
     process.env.HELLO = "world1";
     const envData = env().load(schemaMeta);
-    if (!envData.success) {
+    if (!envData?.success) {
       throw new Error("Failed to load env data");
     }
 
