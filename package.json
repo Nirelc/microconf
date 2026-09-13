@@ -2,7 +2,7 @@
   "name": "@nirelc/microconf",
   "description": "Lightweight and simple type-safety config library over microtype",
   "author": "Toil",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "type": "module",
   "homepage": "https://github.com/nirelc/microconf#readme",
@@ -66,6 +66,6 @@
   ],
   "sideEffects": false,
   "dependencies": {
-    "@nirelc/microtype": "^0.0.2"
+    "@nirelc/microtype": "^0.0.3"
   }
 }
